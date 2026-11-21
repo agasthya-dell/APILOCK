@@ -45,6 +45,34 @@ function AuthCallbackPage() {
       window.location.href = "/dashboard";
     };
 
+    // Check URL parameters for explicit errors (e.g. user cancelled GitHub/Google consent)
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const errorDesc =
+        searchParams.get("error_description") ||
+        hashParams.get("error_description") ||
+        searchParams.get("error") ||
+        hashParams.get("error");
+
+      if (errorDesc) {
+        setError(decodeURIComponent(errorDesc.replace(/\+/g, " ")));
+        return;
+      }
+
+      // If PKCE code was returned, exchange it for session
+      const code = searchParams.get("code");
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ data, error: codeErr }) => {
+          if (data.session?.user) {
+            finish(data.session.user);
+          } else if (codeErr) {
+            setError(codeErr.message);
+          }
+        });
+      }
+    }
+
     // Listen for the session that supabase-js extracts from the URL hash.
     const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
       (event, session) => {

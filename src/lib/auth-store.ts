@@ -65,7 +65,13 @@ export function getStoredUser(): User | null {
   try {
     const raw = localStorage.getItem(AUTH_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as User;
+    const parsed = JSON.parse(raw) as User;
+    // Discard any legacy demo accounts so real authentication is always used
+    if (parsed.id?.includes("demo") || parsed.email?.includes("demo@")) {
+      localStorage.removeItem(AUTH_KEY);
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
@@ -173,44 +179,32 @@ export async function signUpWithEmail(
 // ─── OAuth ───────────────────────────────────────────────────────────────────
 
 export async function signInWithGitHub(): Promise<void> {
-  if (supabaseConfigured) {
-    // This opens github.com — user enters their GitHub username + password
-    // or picks an already-signed-in account, exactly like any GitHub OAuth app.
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: "read:user user:email",
-        // Skip the Supabase intermediate screen and go straight to GitHub
-        queryParams: { prompt: "select_account" },
-      },
-    });
-    // signInWithOAuth redirects the browser — if we're still here it errored
-    if (error) throw new Error(error.message);
-    return;
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+      scopes: "read:user user:email",
+      queryParams: { prompt: "select_account" },
+    },
+  });
+  if (error) throw new Error(error.message);
+  if (data?.url) {
+    window.location.href = data.url;
   }
-  // Fallback demo (no Supabase configured)
-  const user = createDemoGitHubUser();
-  storeUser(user);
 }
 
 export async function signInWithGoogle(): Promise<void> {
-  if (supabaseConfigured) {
-    // This opens accounts.google.com — user picks or enters their Google account
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        // Forces the Google account chooser every time
-        queryParams: { prompt: "select_account" },
-      },
-    });
-    if (error) throw new Error(error.message);
-    return;
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+      queryParams: { prompt: "select_account" },
+    },
+  });
+  if (error) throw new Error(error.message);
+  if (data?.url) {
+    window.location.href = data.url;
   }
-  // Fallback demo
-  const user = createDemoGoogleUser();
-  storeUser(user);
 }
 
 // ─── Session helpers ─────────────────────────────────────────────────────────
@@ -221,14 +215,18 @@ export async function signInWithGoogle(): Promise<void> {
  */
 export async function syncSessionFromSupabase(): Promise<User | null> {
   if (!supabaseConfigured) return getStoredUser();
-  const { data } = await supabase.auth.getSession();
-  if (data.session?.user) {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error || !data.session?.user) {
+      clearUser();
+      return null;
+    }
     const user = sbUserToAppUser(data.session.user);
     storeUser(user);
     return user;
+  } catch {
+    return getStoredUser();
   }
-  clearUser();
-  return null;
 }
 
 export async function signOut(): Promise<void> {

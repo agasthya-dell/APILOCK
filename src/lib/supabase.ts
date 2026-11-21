@@ -13,21 +13,24 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"] as string | undefined ?? "";
-const supabaseAnonKey = import.meta.env["VITE_SUPABASE_ANON_KEY"] as string | undefined ?? "";
+const envUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_SUPABASE_URL : undefined;
+const envKey = typeof import.meta !== "undefined" ? import.meta.env?.VITE_SUPABASE_ANON_KEY : undefined;
 
-export const supabaseConfigured = supabaseUrl.length > 0 && supabaseAnonKey.length > 0;
+const supabaseUrl = envUrl || "https://ssjmaqnuczmwtaeefpad.supabase.co";
+const supabaseAnonKey = envKey || "sb_publishable__uzEWRjBffpT_X3hInQkng_5P1y3LUd";
+
+export const supabaseConfigured = Boolean(
+  supabaseUrl && supabaseAnonKey && !supabaseUrl.includes("placeholder"),
+);
 
 export const supabase = createClient(
-  supabaseUrl || "https://placeholder.supabase.co",
-  supabaseAnonKey || "placeholder-anon-key",
+  supabaseUrl,
+  supabaseAnonKey,
   {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      // implicit works for both OAuth and magic-link without a server-side
-      // token exchange step, keeping the flow entirely client-side.
       flowType: "implicit",
     },
   },

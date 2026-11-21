@@ -38,9 +38,9 @@ function AuthPage() {
 
   useEffect(() => {
     setMounted(true);
-    // Check if already logged in — sync from Supabase first
+    // Check if already logged in with a real Supabase session
     syncSessionFromSupabase().then((liveUser) => {
-      if (liveUser ?? getStoredUser()) goToDashboard();
+      if (liveUser) goToDashboard();
     });
   }, []);
 
@@ -56,13 +56,12 @@ function AuthPage() {
         setError(result.error);
         setLoading(null);
       } else if (result.user) {
-        // Hard redirect so the full page reloads with the new session
         goToDashboard();
       } else {
         setLoading(null);
       }
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setLoading(null);
     }
   };
@@ -71,10 +70,9 @@ function AuthPage() {
     setError(null);
     setLoading("github");
     try {
-      // signInWithGitHub triggers a full browser redirect to GitHub — no return here
       await signInWithGitHub();
-    } catch (err) {
-      setError("GitHub sign-in failed. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "GitHub sign-in failed. Please try again.");
       setLoading(null);
     }
   };
@@ -83,10 +81,9 @@ function AuthPage() {
     setError(null);
     setLoading("google");
     try {
-      // signInWithGoogle triggers a full browser redirect to Google — no return here
       await signInWithGoogle();
-    } catch {
-      setError("Google sign-in failed. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
       setLoading(null);
     }
   };
