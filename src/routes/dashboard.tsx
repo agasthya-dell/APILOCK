@@ -13,9 +13,11 @@ import {
   GitBranch,
   Globe,
   HardDrive,
+  Info,
   Layers,
   Lock,
   LogOut,
+  LogIn,
   Plus,
   Radar,
   RefreshCw,
@@ -31,7 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AskPhillNavbar } from "@/components/AskPhillNavbar";
 import { getStoredUser, signOut, syncSessionFromSupabase, type User } from "@/lib/auth-store";
-import { loadAnalysisHistory, deleteAnalysis, getHealthLabel, type AnalysisResult } from "@/lib/analysis-store";
+import { loadAnalysisHistory, deleteAnalysis, getHealthLabel, type AnalysisResult, type RepoMetadata } from "@/lib/analysis-store";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -42,6 +44,163 @@ export const Route = createFileRoute("/dashboard")({
   }),
   component: DashboardPage,
 });
+
+function createMockRepo(params: Partial<RepoMetadata> & { fullName: string; owner: string; name: string }): RepoMetadata {
+  return {
+    id: 1001,
+    description: "Production repository monitored by APILOCK.",
+    createdAt: new Date(Date.now() - 365 * 86400000).toISOString(),
+    updatedAt: new Date().toISOString(),
+    pushedAt: new Date().toISOString(),
+    size: 4096,
+    isPrivate: false,
+    topics: [],
+    source: "github_url",
+    url: `https://github.com/${params.fullName}`,
+    language: "TypeScript",
+    stars: 1000,
+    forks: 200,
+    openIssues: 10,
+    defaultBranch: "main",
+    ...params,
+  };
+}
+
+// Demo analyses displayed when visitor is in Guest Mode or has no audits yet
+const DEMO_ANALYSES: AnalysisResult[] = [
+  {
+    id: "demo-react",
+    status: "completed",
+    currentStage: "completed",
+    stageProgress: 100,
+    overallProgress: 100,
+    repo: createMockRepo({
+      fullName: "facebook/react",
+      owner: "facebook",
+      name: "react",
+      defaultBranch: "main",
+      language: "TypeScript",
+      stars: 228000,
+      forks: 46000,
+      openIssues: 850,
+      topics: ["react", "javascript", "ui", "frontend"],
+    }),
+    totalFilesDiscovered: 450,
+    totalFilesInspected: 312,
+    totalFindingsCount: 3,
+    filesSkipped: 138,
+    treeTruncated: false,
+    startedAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    completedAt: new Date(Date.now() - 3600000 * 3.8).toISOString(),
+    scores: {
+      overall: 92,
+      codeQuality: { score: 19, maxScore: 20, available: true, findings: [] },
+      projectStructure: { score: 14, maxScore: 15, available: true, findings: [] },
+      security: { score: 25, maxScore: 25, available: true, findings: [] },
+      dependencyHealth: { score: 14, maxScore: 15, available: true, findings: [] },
+      documentation: { score: 9, maxScore: 10, available: true, findings: [] },
+      testing: { score: 7, maxScore: 10, available: true, findings: [] },
+      maintainability: { score: 4, maxScore: 5, available: true, findings: [] },
+    },
+    findings: [],
+    secretFindings: [],
+    dependencies: [],
+    structure: null,
+    improvementRoadmap: [],
+    strengths: ["Strong TypeScript architecture", "Zero exposed secrets in repo history"],
+    weaknesses: [],
+    keyObservations: ["All perimeter security checks passed"],
+    analysisLog: ["Completed scan in 2.3s"],
+  },
+  {
+    id: "demo-openai",
+    status: "completed",
+    currentStage: "completed",
+    stageProgress: 100,
+    overallProgress: 100,
+    repo: createMockRepo({
+      fullName: "openai/openai-python",
+      owner: "openai",
+      name: "openai-python",
+      defaultBranch: "main",
+      language: "Python",
+      stars: 23500,
+      forks: 3200,
+      openIssues: 120,
+      topics: ["python", "ai", "openai", "sdk"],
+    }),
+    totalFilesDiscovered: 180,
+    totalFilesInspected: 142,
+    totalFindingsCount: 2,
+    filesSkipped: 38,
+    treeTruncated: false,
+    startedAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+    completedAt: new Date(Date.now() - 3600000 * 23.9).toISOString(),
+    scores: {
+      overall: 95,
+      codeQuality: { score: 20, maxScore: 20, available: true, findings: [] },
+      projectStructure: { score: 15, maxScore: 15, available: true, findings: [] },
+      security: { score: 25, maxScore: 25, available: true, findings: [] },
+      dependencyHealth: { score: 15, maxScore: 15, available: true, findings: [] },
+      documentation: { score: 10, maxScore: 10, available: true, findings: [] },
+      testing: { score: 6, maxScore: 10, available: true, findings: [] },
+      maintainability: { score: 4, maxScore: 5, available: true, findings: [] },
+    },
+    findings: [],
+    secretFindings: [],
+    dependencies: [],
+    structure: null,
+    improvementRoadmap: [],
+    strengths: ["Clean type hints", "Zero hardcoded keys"],
+    weaknesses: [],
+    keyObservations: ["Environment variables used properly"],
+    analysisLog: ["Completed scan in 1.8s"],
+  },
+  {
+    id: "demo-supabase",
+    status: "completed",
+    currentStage: "completed",
+    stageProgress: 100,
+    overallProgress: 100,
+    repo: createMockRepo({
+      fullName: "supabase/supabase",
+      owner: "supabase",
+      name: "supabase",
+      defaultBranch: "master",
+      language: "TypeScript",
+      stars: 76000,
+      forks: 6400,
+      openIssues: 420,
+      topics: ["database", "postgres", "supabase"],
+    }),
+    totalFilesDiscovered: 850,
+    totalFilesInspected: 480,
+    totalFindingsCount: 6,
+    filesSkipped: 370,
+    treeTruncated: true,
+    startedAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+    completedAt: new Date(Date.now() - 3600000 * 47.7).toISOString(),
+    scores: {
+      overall: 78,
+      codeQuality: { score: 16, maxScore: 20, available: true, findings: [] },
+      projectStructure: { score: 12, maxScore: 15, available: true, findings: [] },
+      security: { score: 20, maxScore: 25, available: true, findings: [] },
+      dependencyHealth: { score: 12, maxScore: 15, available: true, findings: [] },
+      documentation: { score: 8, maxScore: 10, available: true, findings: [] },
+      testing: { score: 6, maxScore: 10, available: true, findings: [] },
+      maintainability: { score: 4, maxScore: 5, available: true, findings: [] },
+    },
+    findings: [],
+    secretFindings: [],
+    dependencies: [],
+    structure: null,
+    improvementRoadmap: [],
+    strengths: ["Monorepo tooling", "Automated CI workflows"],
+    weaknesses: [],
+    keyObservations: ["Test fixture credentials detected in mock files"],
+    analysisLog: ["Completed scan in 3.4s"],
+  },
+];
 
 // Helper to pick a cool cyber banner image for repo cards based on language
 function getRepoCoverImage(language?: string | null): string {
@@ -233,24 +392,38 @@ function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [analyses, setAnalyses] = useState<AnalysisResult[]>([]);
   const [checking, setChecking] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     syncSessionFromSupabase().then((liveUser) => {
       const resolved = liveUser ?? getStoredUser();
-      if (!resolved) {
-        navigate({ to: "/auth" });
-        return;
+      if (resolved) {
+        setUser(resolved);
+        setIsGuest(false);
+        const stored = loadAnalysisHistory();
+        setAnalyses(stored.length > 0 ? stored : DEMO_ANALYSES);
+      } else {
+        // Guest mode — allow instant preview of the command center
+        setUser({
+          id: "guest-explorer",
+          name: "Guest Operator",
+          email: "guest@apilock.dev",
+          provider: "unknown",
+          createdAt: new Date().toISOString(),
+        });
+        setIsGuest(true);
+        const stored = loadAnalysisHistory();
+        setAnalyses(stored.length > 0 ? stored : DEMO_ANALYSES);
       }
-      setUser(resolved);
-      setAnalyses(loadAnalysisHistory());
       setChecking(false);
     });
-  }, [navigate]);
+  }, []);
 
   const handleDelete = (id: string) => {
     deleteAnalysis(id);
-    setAnalyses(loadAnalysisHistory());
+    const updated = loadAnalysisHistory();
+    setAnalyses(updated.length > 0 ? updated : isGuest ? DEMO_ANALYSES.filter(d => d.id !== id) : []);
   };
 
   const handleSignOut = async () => {
@@ -326,6 +499,24 @@ function DashboardPage() {
       </div>
 
       <main className="relative z-10 max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+        {/* Guest Mode Notification Pill */}
+        {isGuest && (
+          <div className="p-3.5 rounded-2xl bg-black/60 border border-[#bef264]/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+            <div className="flex items-center gap-2.5 text-[#bef264]">
+              <Info className="w-4 h-4 flex-shrink-0" />
+              <span>
+                <strong>Telemetry Preview Mode:</strong> You are exploring with sample repositories. Connect your GitHub account to analyze private repos.
+              </span>
+            </div>
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#bef264] text-black font-bold hover:bg-[#a3e635] transition-all cursor-pointer flex-shrink-0 text-[11px]"
+            >
+              <LogIn className="w-3.5 h-3.5" /> Sign in with GitHub
+            </Link>
+          </div>
+        )}
+
         {/* ─── 1. EPIC COMMAND CENTER HERO BANNER WITH COOL CYBER ROOM IMAGERY ─── */}
         <section className="relative rounded-3xl overflow-hidden border border-[#bef264]/30 shadow-[0_15px_45px_rgba(0,0,0,0.6)] group">
           {/* Internet Background Image: High-Tech Cyber Security Command Hub */}
@@ -374,16 +565,25 @@ function DashboardPage() {
                   )}
                   <span className="text-xs font-semibold text-white">{user.name}</span>
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#bef264]/20 text-[#bef264]">
-                    AUTHORIZED
+                    {isGuest ? "PREVIEW AGENT" : "AUTHORIZED"}
                   </span>
                 </div>
 
-                <button
-                  onClick={handleSignOut}
-                  className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-300 hover:text-white px-3.5 py-1.5 rounded-full bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 transition-all cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" /> Sign out
-                </button>
+                {!isGuest ? (
+                  <button
+                    onClick={handleSignOut}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-300 hover:text-white px-3.5 py-1.5 rounded-full bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 transition-all cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign out
+                  </button>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#bef264] hover:text-white px-3.5 py-1.5 rounded-full bg-black/50 border border-[#bef264]/40 hover:bg-[#bef264]/20 transition-all cursor-pointer"
+                  >
+                    <LogIn className="w-3.5 h-3.5" /> Sign in / Register
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -602,29 +802,17 @@ function DashboardPage() {
                   <BarChart3 className="w-8 h-8 text-[#bef264]" />
                 </div>
                 <h3 className="text-xl font-bold text-white tracking-tight">
-                  {analyses.length === 0 ? "No Repositories Audited Yet" : "No Matching Repositories Found"}
+                  No Matching Repositories Found
                 </h3>
                 <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-sans">
-                  {analyses.length === 0
-                    ? "Connect your GitHub repository to generate real-time secret discovery reports, code health scores, and remediation guides."
-                    : `No results match "${searchQuery}". Clear your search query to see all analyses.`}
+                  No results match "{searchQuery}". Clear your search query to see all analyses.
                 </p>
-                {analyses.length === 0 ? (
-                  <Button
-                    onClick={() => navigate({ to: "/analyze" })}
-                    className="bg-[#bef264] hover:bg-[#a3e635] text-black font-bold font-mono text-xs px-6 py-3 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer inline-flex items-center gap-2"
-                  >
-                    <FileCode2 className="w-4 h-4" />
-                    Audit Your First Repository
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => setSearchQuery("")}
-                    className="bg-white/10 hover:bg-white/20 text-white font-mono text-xs px-4 py-2 rounded-xl cursor-pointer"
-                  >
-                    Clear Filter
-                  </Button>
-                )}
+                <Button
+                  onClick={() => setSearchQuery("")}
+                  className="bg-white/10 hover:bg-white/20 text-white font-mono text-xs px-4 py-2 rounded-xl cursor-pointer"
+                >
+                  Clear Filter
+                </Button>
               </div>
             </div>
           ) : (
