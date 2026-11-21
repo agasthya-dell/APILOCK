@@ -40,16 +40,46 @@ export function AskPhillNavbar() {
 
           {/* Floating Dropdown Card: Appears cleanly on cursor hover */}
           <div
-            className={`absolute left-0 top-full mt-2 w-full min-w-[120px] bg-[#0c0c0c] rounded-2xl p-1.5 shadow-2xl shadow-black/90 border border-white/20 backdrop-blur-xl flex flex-col gap-1 transition-all duration-200 z-50 ${
+            className={`absolute left-0 top-full mt-2 w-full min-w-[135px] bg-[#0c0c0c] rounded-2xl p-1.5 shadow-2xl shadow-black/90 border border-white/20 backdrop-blur-xl flex flex-col gap-1 transition-all duration-200 z-50 ${
               isOpen
                 ? "opacity-100 translate-y-0 pointer-events-auto visible"
                 : "opacity-0 -translate-y-2 pointer-events-none invisible"
             }`}
             style={{ color: "#ffffff" }}
           >
-            {/* About Link: Pure White text on Black background */}
+            {/* Global Scanner Link */}
+            <Link
+              to="/get-started"
+              onClick={() => setIsOpen(false)}
+              className="!text-white hover:!text-white hover:bg-white/20 text-xs sm:text-[13px] font-sans font-bold py-1.5 px-3 rounded-full text-center transition-all cursor-pointer block select-none !opacity-100"
+              style={{ color: "#ffffff", opacity: 1 }}
+            >
+              Scanner
+            </Link>
+
+            {/* Dashboard Link */}
+            <Link
+              to="/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="!text-white hover:!text-white hover:bg-white/20 text-xs sm:text-[13px] font-sans font-bold py-1.5 px-3 rounded-full text-center transition-all cursor-pointer block select-none !opacity-100"
+              style={{ color: "#ffffff", opacity: 1 }}
+            >
+              Dashboard
+            </Link>
+
+            {/* Analyze Repo Link */}
+            <Link
+              to="/analyze"
+              onClick={() => setIsOpen(false)}
+              className="!text-white hover:!text-white hover:bg-white/20 text-xs sm:text-[13px] font-sans font-bold py-1.5 px-3 rounded-full text-center transition-all cursor-pointer block select-none !opacity-100"
+              style={{ color: "#ffffff", opacity: 1 }}
+            >
+              Analyze Repo
+            </Link>
+
+            {/* About Link */}
             <a
-              href="#platform"
+              href="/#platform"
               onClick={() => setIsOpen(false)}
               className="!text-white hover:!text-white hover:bg-white/20 text-xs sm:text-[13px] font-sans font-bold py-1.5 px-3 rounded-full text-center transition-all cursor-pointer block select-none !opacity-100"
               style={{ color: "#ffffff", opacity: 1 }}
@@ -57,7 +87,7 @@ export function AskPhillNavbar() {
               About
             </a>
 
-            {/* Contact Link: Pure White text on Black background */}
+            {/* Contact Link */}
             <a
               href="mailto:hello@apilock.dev"
               onClick={() => setIsOpen(false)}

@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AskPhillNavbar } from "@/components/AskPhillNavbar";
 import { getStoredUser, syncSessionFromSupabase, getGitHubAccessToken } from "@/lib/auth-store";
 import {
   parseGitHubRepoInput,
@@ -224,20 +225,8 @@ function AnalyzePage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-paper)]">
-      {/* Header */}
-      <header className="border-b border-[var(--color-border)] bg-[var(--card)] sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <Link to="/dashboard" className="inline-flex items-center gap-2 font-bold text-base text-[var(--color-ink)]">
-            <Radar className="w-5 h-5 text-[#bef264]" />
-            APILOCK
-          </Link>
-          <nav className="flex items-center gap-1 text-xs text-[var(--color-ink-muted)]">
-            <Link to="/dashboard" className="hover:text-[var(--color-ink)] transition-colors">Dashboard</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-[var(--color-ink)] font-medium">Analyze Repository</span>
-          </nav>
-        </div>
-      </header>
+      {/* Ask Phill Style Navbar matching Homepage */}
+      <AskPhillNavbar />
 
       <main className="max-w-3xl mx-auto px-6 py-10">
         {/* Title */}

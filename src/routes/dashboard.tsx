@@ -17,6 +17,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AskPhillNavbar } from "@/components/AskPhillNavbar";
 import { getStoredUser, signOut, syncSessionFromSupabase, type User } from "@/lib/auth-store";
 import { loadAnalysisHistory, deleteAnalysis, getHealthLabel, type AnalysisResult } from "@/lib/analysis-store";
 
@@ -176,31 +177,8 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-paper)]">
-      {/* Header */}
-      <header className="border-b border-[var(--color-border)] bg-[var(--card)] sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="inline-flex items-center gap-2 font-bold text-base text-[var(--color-ink)]">
-            <Radar className="w-5 h-5 text-[#bef264]" />
-            APILOCK
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
-              {user.avatarUrl && (
-                <img src={user.avatarUrl} alt="" className="w-6 h-6 rounded-full" />
-              )}
-              <span className="font-medium text-[var(--color-ink)]">{user.name}</span>
-            </div>
-            <button
-              onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors px-3 py-1.5 rounded-lg hover:bg-[var(--color-accent)]"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign out
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Ask Phill Style Navbar matching Homepage */}
+      <AskPhillNavbar />
 
       <main className="max-w-6xl mx-auto px-6 py-10">
         {/* Welcome + CTA */}
@@ -215,13 +193,28 @@ function DashboardPage() {
                 : "Analyze your first repository to get started"}
             </p>
           </div>
-          <Button
-            onClick={() => navigate({ to: "/analyze" })}
-            className="bg-[#bef264] text-black hover:bg-[#a3e635] font-bold text-sm flex items-center gap-2 px-5"
-          >
-            <Plus className="w-4 h-4" />
-            Analyze Repository
-          </Button>
+
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-ink-muted)] bg-[var(--card)] px-3 py-1.5 rounded-full border border-[var(--color-border)]">
+              {user.avatarUrl && (
+                <img src={user.avatarUrl} alt="" className="w-5 h-5 rounded-full" />
+              )}
+              <span className="font-semibold text-xs text-[var(--color-ink)]">{user.name}</span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 transition-colors px-3 py-1.5 rounded-full hover:bg-rose-50 border border-rose-200 cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Sign out
+            </button>
+            <Button
+              onClick={() => navigate({ to: "/analyze" })}
+              className="bg-[#bef264] text-black hover:bg-[#a3e635] hover:scale-105 active:scale-95 font-bold font-sans px-4 py-2 rounded-full text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <Plus className="w-3.5 h-3.5" /> Analyze Repository
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}

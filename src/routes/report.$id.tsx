@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PixelShowcaseCard } from "@/components/PixelShowcaseCard";
+import { AskPhillNavbar } from "@/components/AskPhillNavbar";
 import { getStoredUser, syncSessionFromSupabase } from "@/lib/auth-store";
 import {
   getAnalysis,
@@ -308,33 +309,16 @@ function ReportPage() {
   return (
     <div className="bg-[var(--color-paper)] min-h-screen">
 
-      {/* ── Sticky nav ── */}
-      <header className="site-header">
-        <div className="header-inner">
-          <Link to="/" className="brand-mark">
-            <span className="brand-icon"><Radar /></span>
-            <span className="font-bold tracking-tight">APILOCK</span>
-          </Link>
-          <nav className="desktop-nav">
-            <Link to="/dashboard" className="text-sm font-medium">Dashboard</Link>
-            <Link to="/analyze"   className="text-sm font-medium">New Analysis</Link>
-          </nav>
-          <div className="header-actions">
-            <Button onClick={handleExport}
-              className="button-ink gap-2 cursor-pointer">
-              <Download className="w-4 h-4" /> Export
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Ask Phill Style Navbar: Left Tab (Home, About, Contact, Dashboard), Center APILOCK, Right Action */}
+      <AskPhillNavbar />
 
-      {/* ── HERO: score + repo info (dark panel) ── */}
-      <section className="bg-[var(--color-ink)] text-white relative overflow-hidden">
+      {/* ── HERO: score + repo info (dark panel matching homepage design) ── */}
+      <section className="bg-[var(--color-ink)] text-white relative overflow-hidden mt-6 sm:mt-8 max-w-[1360px] mx-auto rounded-2xl sm:rounded-3xl border border-[#bef264]/25 shadow-2xl">
         <div className="absolute inset-0 opacity-[0.035]"
           style={{ backgroundImage: "linear-gradient(#bef264 1px,transparent 1px),linear-gradient(90deg,#bef264 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
         <div className="absolute top-0 left-0 right-0 h-px bg-[#bef264]/30" />
 
-        <div className="section-wrap py-16 sm:py-20 relative z-10">
+        <div className="section-wrap py-12 sm:py-16 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
             {/* Left — score ring */}
@@ -366,14 +350,23 @@ function ReportPage() {
             {/* Right — meta + category bars */}
             <div className="lg:col-span-8 space-y-7">
               <div>
-                <div className="flex items-start gap-3 flex-wrap">
-                  <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white leading-none">
-                    {analysis.repo.fullName}
-                  </h1>
-                  <a href={analysis.repo.url} target="_blank" rel="noopener noreferrer"
-                    className="mt-1 text-white/40 hover:text-[#bef264] transition-colors">
-                    <ArrowUpRight className="w-5 h-5" />
-                  </a>
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div className="flex items-start gap-3 flex-wrap">
+                    <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white leading-none">
+                      {analysis.repo.fullName}
+                    </h1>
+                    <a href={analysis.repo.url} target="_blank" rel="noopener noreferrer"
+                      className="mt-1 text-white/40 hover:text-[#bef264] transition-colors">
+                      <ArrowUpRight className="w-5 h-5" />
+                    </a>
+                  </div>
+
+                  <Button
+                    onClick={handleExport}
+                    className="bg-[#bef264] text-black hover:bg-[#a3e635] hover:scale-105 active:scale-95 font-bold font-sans text-xs cursor-pointer shadow-lg px-4 h-9 rounded-full transition-all flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Export Report
+                  </Button>
                 </div>
                 {analysis.repo.description && (
                   <p className="text-white/60 text-sm mt-2 leading-relaxed max-w-xl">{analysis.repo.description}</p>
