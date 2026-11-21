@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { syncSessionFromSupabase } from "../lib/auth-store";
 
 function NotFoundComponent() {
   return (
@@ -120,6 +121,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Sync the Supabase session into localStorage on every mount so that
+  // getStoredUser() (which is synchronous) always reflects the real session.
+  useEffect(() => {
+    void syncSessionFromSupabase();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -10,33 +10,127 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as GetStartedRouteImport } from './routes/get-started'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as ReportIdRouteImport } from './routes/report.$id'
+import { Route as ScanIdRouteImport } from './routes/scan.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyzeRoute = AnalyzeRouteImport.update({
+  id: '/analyze',
+  path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
+const ReportIdRoute = ReportIdRouteImport.update({
+  id: '/report/$id',
+  path: '/report/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScanIdRoute = ScanIdRouteImport.update({
+  id: '/scan/$id',
+  path: '/scan/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/dashboard': typeof DashboardRoute
+  '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/report/$id': typeof ReportIdRoute
+  '/scan/$id': typeof ScanIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/dashboard': typeof DashboardRoute
+  '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/report/$id': typeof ReportIdRoute
+  '/scan/$id': typeof ScanIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/dashboard': typeof DashboardRoute
+  '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/report/$id': typeof ReportIdRoute
+  '/scan/$id': typeof ScanIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/get-started'
+    | '/auth/callback'
+    | '/report/$id'
+    | '/scan/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/get-started'
+    | '/auth/callback'
+    | '/report/$id'
+    | '/scan/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/get-started'
+    | '/auth/callback'
+    | '/report/$id'
+    | '/scan/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyzeRoute: typeof AnalyzeRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  DashboardRoute: typeof DashboardRoute
+  GetStartedRoute: typeof GetStartedRoute
+  ReportIdRoute: typeof ReportIdRoute
+  ScanIdRoute: typeof ScanIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +142,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analyze': {
+      id: '/analyze'
+      path: '/analyze'
+      fullPath: '/analyze'
+      preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/report/$id': {
+      id: '/report/$id'
+      path: '/report/$id'
+      fullPath: '/report/$id'
+      preLoaderRoute: typeof ReportIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scan/$id': {
+      id: '/scan/$id'
+      path: '/scan/$id'
+      fullPath: '/scan/$id'
+      preLoaderRoute: typeof ScanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyzeRoute: AnalyzeRoute,
+  AuthRoute: AuthRouteWithChildren,
+  DashboardRoute: DashboardRoute,
+  GetStartedRoute: GetStartedRoute,
+  ReportIdRoute: ReportIdRoute,
+  ScanIdRoute: ScanIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
