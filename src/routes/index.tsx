@@ -24,18 +24,23 @@ import { AlienCatPixelCard } from "@/components/AlienCatPixelCard";
 import { FahhhPixelArt } from "@/components/FahhhPixelArt";
 import { PixelShowcaseCard } from "@/components/PixelShowcaseCard";
 import { AskPhillNavbar } from "@/components/AskPhillNavbar";
-import {
-  WordCircleAnimated,
-  WordUnderlineAnimated,
-} from "@/components/visual/DoodleDecorations";
+import { WordCircleAnimated, WordUnderlineAnimated } from "@/components/visual/DoodleDecorations";
 
 const categories = [
-  { icon: Fingerprint, name: "Auth & Service Tokens", note: "OAuth keys, access tokens & service secrets" },
+  {
+    icon: Fingerprint,
+    name: "Auth & Service Tokens",
+    note: "OAuth keys, access tokens & service secrets",
+  },
   { icon: KeyRound, name: "Cloud access", note: "AWS, Google Cloud & infrastructure" },
   { icon: GitBranch, name: "GitHub tokens", note: "Personal access & fine-grained tokens" },
   { icon: LockKeyhole, name: "Database credentials", note: "Connection strings & database URLs" },
   { icon: ShieldCheck, name: "Private keys", note: "SSH, certificates & cryptographic material" },
-  { icon: FileCode2, name: "Passwords & config", note: "Hardcoded passwords and app configuration" },
+  {
+    icon: FileCode2,
+    name: "Passwords & config",
+    note: "Hardcoded passwords and app configuration",
+  },
 ];
 
 export const Route = createFileRoute("/")({
@@ -50,7 +55,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "APILOCK — Continuous Git Secret Detection" },
       {
         property: "og:description",
-        content: "Continuous discovery. Authorized scanning. Zero exposed secrets.",
+        content: "Authorized repository scanning. Zero exposed secrets.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -87,7 +92,11 @@ function APILOCKPage() {
           LANDING PAGE HERO: Featuring the authentic Halftone/Dithered
           Cyber Surveillance Eye directly as the full background
          ───────────────────────────────────────────────────────────── */}
-      <section id="hero" className="hero-landing section-wrap relative pt-6 sm:pt-8 pb-5 sm:pb-7 overflow-hidden flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-[#bef264]/25 shadow-2xl mt-8 sm:mt-12 lg:mt-14 text-white" aria-labelledby="hero-title">
+      <section
+        id="hero"
+        className="hero-landing section-wrap relative pt-6 sm:pt-8 pb-5 sm:pb-7 overflow-hidden flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-[#bef264]/25 shadow-2xl mt-8 sm:mt-12 lg:mt-14 text-white"
+        aria-labelledby="hero-title"
+      >
         {/* 1. THE AUTHENTIC HALFTONE EYE ARTWORK AS FULL BACKGROUND */}
         <CyberEyeHeroBackground />
 
@@ -96,26 +105,33 @@ function APILOCKPage() {
           {/* Main Hero Header Row: Copy on Left, Colossal Title on Right */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pt-2 pb-2 sm:pb-3">
             <div className="lg:col-span-5 space-y-4">
-
-              <h1 id="hero-title" className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white leading-[1.06] drop-shadow-md">
+              <h1
+                id="hero-title"
+                className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white leading-[1.06] drop-shadow-md"
+              >
                 Your <WordCircleAnimated>secrets</WordCircleAnimated> shouldn’t be hiding in{" "}
                 <WordUnderlineAnimated>public.</WordUnderlineAnimated>
               </h1>
               <p className="hero-description m-0 text-sm sm:text-base text-white leading-relaxed max-w-md font-sans">
-                Discover exposed credentials, understand security risks, and stay ahead of accidental leaks
-                across the open-source ecosystem.
+                Discover exposed credentials, understand security risks, and stay ahead of
+                accidental leaks in the repositories you choose to scan.
               </p>
               <div className="hero-actions flex items-center gap-4 pt-2">
-                <Button asChild className="bg-[#bef264] text-black hover:bg-[#a3e635] hover:scale-105 font-bold font-sans px-6 shadow-lg transition-all cursor-pointer">
+                <Button
+                  asChild
+                  className="bg-[#bef264] text-black hover:bg-[#a3e635] hover:scale-105 font-bold font-sans px-6 shadow-lg transition-all cursor-pointer"
+                >
                   <a href="/auth">
                     Get started <ArrowRight />
                   </a>
                 </Button>
-                <a className="text-link text-xs sm:text-sm font-sans font-semibold text-white hover:text-[#bef264] transition-colors" href="#process">
+                <a
+                  className="text-link text-xs sm:text-sm font-sans font-semibold text-white hover:text-[#bef264] transition-colors"
+                  href="#process"
+                >
                   See how it works <ArrowDown />
                 </a>
               </div>
-
             </div>
 
             <div className="lg:col-span-7 flex justify-start lg:justify-end">
@@ -143,7 +159,11 @@ function APILOCKPage() {
       </section>
 
       {/* SECTION 01: THE EXPOSURE PROBLEM */}
-      <section id="intro" className="intro-section section-wrap relative" aria-labelledby="intro-title">
+      <section
+        id="intro"
+        className="intro-section section-wrap relative"
+        aria-labelledby="intro-title"
+      >
         <div className="section-index">
           <span>01</span>
           <span>THE EXPOSURE PROBLEM</span>
@@ -180,7 +200,11 @@ function APILOCKPage() {
       </section>
 
       {/* SECTION 02: WHY IT MATTERS */}
-      <section id="problem" className="problem-section section-wrap relative" aria-labelledby="problem-title">
+      <section
+        id="problem"
+        className="problem-section section-wrap relative"
+        aria-labelledby="problem-title"
+      >
         <div className="section-index">
           <span>02</span>
           <span>WHY IT MATTERS</span>
@@ -191,8 +215,8 @@ function APILOCKPage() {
             problem.
           </h2>
           <p>
-            Small oversights can outlive the moment they happened. Good visibility makes the next step
-            clearer.
+            Small oversights can outlive the moment they happened. Good visibility makes the next
+            step clearer.
           </p>
         </div>
 
@@ -231,8 +255,8 @@ function APILOCKPage() {
             <div>
               <h3>Limited visibility</h3>
               <p>
-                Without <WordCircleAnimated>continuous monitoring</WordCircleAnimated>, developers may
-                not know where sensitive information has appeared.
+                Without <WordCircleAnimated>continuous monitoring</WordCircleAnimated>, developers
+                may not know where sensitive information has appeared.
               </p>
             </div>
             <span className="problem-glyph group-hover:scale-110 transition-transform">
@@ -243,23 +267,43 @@ function APILOCKPage() {
       </section>
 
       {/* SECTION 03: HOW IT WORKS */}
-      <section id="process" className="process-section section-wrap" aria-labelledby="process-title">
+      <section
+        id="process"
+        className="process-section section-wrap"
+        aria-labelledby="process-title"
+      >
         <div className="section-index">
           <span>03</span>
           <span>HOW IT WORKS</span>
         </div>
         <div className="process-heading">
           <h2 id="process-title">
-            From discovery to <WordUnderlineAnimated>immediate remediation.</WordUnderlineAnimated>
+            From repository connection to{" "}
+            <WordUnderlineAnimated>immediate remediation.</WordUnderlineAnimated>
           </h2>
           <p>Every step has a purpose. Every scan has permission.</p>
         </div>
         <div className="process-track">
           {[
-            ["01", "Discover", "Find public repository metadata and supported security monitoring sources.", Radar],
-            ["02", "Authorize", "Verify permissions before scanning any repository source code.", ShieldCheck],
-            ["03", "Detect", "Inspect authorized files and Git history for possible exposed credentials.", ScanLine],
-            ["04", "Report", "Share redacted findings, severity, context, and remediation guidance.", FileCode2],
+            ["01", "Connect", "Choose a repository you own or have permission to scan.", GitBranch],
+            [
+              "02",
+              "Authorize",
+              "Verify permissions before scanning any repository source code.",
+              ShieldCheck,
+            ],
+            [
+              "03",
+              "Detect",
+              "Inspect authorized files and Git history for possible exposed credentials.",
+              ScanLine,
+            ],
+            [
+              "04",
+              "Report",
+              "Share redacted findings, severity, context, and remediation guidance.",
+              FileCode2,
+            ],
           ].map(([number, title, detail, Icon]) => {
             const StepIcon = Icon as typeof Radar;
             return (
@@ -281,16 +325,19 @@ function APILOCKPage() {
         <div className="authorization-note">
           <ShieldCheck />
           <p>
-            <strong>Authorization is a hard boundary.</strong> Discovery can surface repository metadata.
-            Source-code scanning happens only for repositories with permission or through legitimate
-            security integrations.
+            <strong>Authorization is a hard boundary.</strong> Source-code scanning happens only
+            after you connect and authorize the repository. Public visibility alone is not
+            permission to scan.
           </p>
         </div>
       </section>
 
-
       {/* SECTION 04: DETECTION ENGINE */}
-      <section id="detection" className="detection-section section-wrap" aria-labelledby="detection-title">
+      <section
+        id="detection"
+        className="detection-section section-wrap"
+        aria-labelledby="detection-title"
+      >
         <div className="section-index">
           <span>04</span>
           <span>DETECTION ENGINE</span>
@@ -310,7 +357,7 @@ function APILOCKPage() {
           imageSrc="/pixel-droid.svg"
           imageAlt="Pixel Art Cyber Droid Sentinel"
           title="Pattern recognition across every layer of your stack."
-          description="From OAuth secrets and cloud credentials to private SSH keys and database URIs, APILOCK matches high-entropy tokens before they propagate across public forks."
+          description="From OAuth secrets and cloud credentials to private SSH keys and database URIs, APILOCK matches high-entropy tokens before they spread further."
           badge="Detection Engine"
         />
 
@@ -381,14 +428,23 @@ function APILOCKPage() {
               </article>
             ))}
           </div>
-          <svg className="security-scribble" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true">
+          <svg
+            className="security-scribble"
+            viewBox="0 0 1200 260"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
             <path d="M-30 188c191-210 275 204 475-9 180-191 267 125 437-2 118-88 189-70 346 5" />
           </svg>
         </div>
       </section>
 
       {/* SECTION 07: CONTINUOUS MONITORING */}
-      <section id="platform" className="monitoring-section section-wrap" aria-labelledby="monitoring-title">
+      <section
+        id="platform"
+        className="monitoring-section section-wrap"
+        aria-labelledby="monitoring-title"
+      >
         <div className="section-index">
           <span>07</span>
           <span>CONTINUOUS MONITORING</span>
@@ -399,8 +455,8 @@ function APILOCKPage() {
               Security doesn’t stop after <WordUnderlineAnimated>one scan.</WordUnderlineAnimated>
             </h2>
             <p>
-              Built around continuous discovery, event-driven monitoring, and scheduled security
-              reviews—with authorization at every source-code scan.
+              Built around continuous monitoring of connected repositories, event-driven scans, and
+              scheduled security reviews—with authorization at every source-code scan.
             </p>
             <a className="text-link" href="#dashboard">
               Explore the platform <ArrowRight />
@@ -409,7 +465,7 @@ function APILOCKPage() {
           <div className="monitoring-flow">
             <div className="flow-legend">
               <span>
-                <i className="legend-discovered" /> Discovered
+                <i className="legend-connected" /> Connected
               </span>
               <span>
                 <i className="legend-authorized" /> Authorized
@@ -419,7 +475,7 @@ function APILOCKPage() {
               </span>
             </div>
             {[
-              ["Repository discovery", "METADATA"],
+              ["Repository connection", "WORKSPACE"],
               ["Authorization", "PERMISSION CHECK"],
               ["Scan queue", "AUTHORIZED ONLY"],
               ["Detection engine", "PATTERN MATCH"],
@@ -444,22 +500,27 @@ function APILOCKPage() {
         {/* Featured Pixel Art Showcase Card */}
         <PixelShowcaseCard
           imageSrc="/pixel-satellite.svg"
-          imageAlt="Pixel Art Orbital Radar Satellite"
-          title="Continuous orbital surveillance. Always watching the boundary."
-          description="Security isn't a one-time audit. As code is pushed, branched, and merged, automated monitoring runs around the clock with strict authorization at every boundary."
-          badge="24/7 Monitoring Radar"
+          imageAlt="Pixel Art Repository Monitoring Satellite"
+          title="Continuous repository monitoring. Always watching the boundary."
+          description="Security isn't a one-time audit. Monitor the repositories you connect as code is pushed, branched, and merged—with strict authorization at every boundary."
+          badge="Authorized Monitoring"
         />
       </section>
 
       {/* SECTION 08: PRODUCT PREVIEW / SAMPLE DATA */}
-      <section id="dashboard" className="dashboard-section section-wrap" aria-labelledby="dashboard-title">
+      <section
+        id="dashboard"
+        className="dashboard-section section-wrap"
+        aria-labelledby="dashboard-title"
+      >
         <div className="section-index">
           <span>08</span>
           <span>PRODUCT PREVIEW / SAMPLE DATA</span>
         </div>
         <div className="dashboard-heading">
           <h2 id="dashboard-title">
-            Everything important. One security <WordUnderlineAnimated>overview.</WordUnderlineAnimated>
+            Everything important. One security{" "}
+            <WordUnderlineAnimated>overview.</WordUnderlineAnimated>
           </h2>
           <p>Illustrative product view • Sample figures, not live data</p>
         </div>
@@ -496,7 +557,7 @@ function APILOCKPage() {
                     <span className="sidebar-glyph">{["⌂", "⌘", "◉", "↗", "◎"][i]}</span>
                     {label}
                   </div>
-                )
+                ),
               )}
               <div className="sidebar-permission">
                 <ShieldCheck />
@@ -519,9 +580,9 @@ function APILOCKPage() {
               </div>
               <div className="metric-row">
                 {[
-                  ["Repositories discovered", "1,284", "+ 42 this week", "neutral"],
-                  ["Authorized", "36", "Owner approved", "olive"],
-                  ["Repositories scanned", "31", "Last 24 hours", "blue"],
+                  ["Connected repositories", "36", "In your workspace", "neutral"],
+                  ["Authorized", "31", "Owner approved", "olive"],
+                  ["Repositories scanned", "28", "Last 24 hours", "blue"],
                   ["Potential findings", "07", "3 require review", "coral"],
                 ].map(([label, value, detail, tone]) => (
                   <article className="metric" key={label}>
@@ -629,7 +690,7 @@ function APILOCKPage() {
           </h2>
           <div className="about-points">
             {[
-              "Visibility across public repository metadata.",
+              "Visibility across connected repository metadata.",
               "Authorized and controlled security scanning.",
               "Redacted findings that protect sensitive values.",
               "Actionable reports instead of confusing alerts.",
@@ -648,7 +709,7 @@ function APILOCKPage() {
           imageSrc="/pixel-lock.svg"
           imageAlt="Pixel Art Cyber Guardian Lock"
           title="Built with developer trust. Hard permission boundaries."
-          description="We believe secret detection must never cross authorization boundaries. Discovery surfaces public metadata, while code scanning requires your explicit consent."
+          description="We believe secret detection must never cross authorization boundaries. Connect repositories you own or are permitted to scan, and authorize every source-code scan."
           badge="Permission First"
         />
       </section>
@@ -664,7 +725,8 @@ function APILOCKPage() {
             <span className="eyebrow-dot" /> Clear eyes on what you publish
           </p>
           <h2 id="cta-title">
-            Keep your code public. Keep your secrets <WordCircleAnimated>private.</WordCircleAnimated>
+            Keep your code public. Keep your secrets{" "}
+            <WordCircleAnimated>private.</WordCircleAnimated>
           </h2>
           <p>Start building better visibility into your repository security.</p>
 
@@ -688,7 +750,12 @@ function APILOCKPage() {
             </a>
           </div>
         </div>
-        <svg className="cta-curve" viewBox="0 0 1350 180" preserveAspectRatio="none" aria-hidden="true">
+        <svg
+          className="cta-curve"
+          viewBox="0 0 1350 180"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
           <path d="M-20 96c202 10 233-102 415-36 158 58 274 104 419 31 170-85 283-5 573 25" />
         </svg>
       </section>
@@ -709,7 +776,7 @@ function APILOCKPage() {
               <span>SHOWPIECES</span>
               <a href="#matrix">Guardian Matrix</a>
               <a href="#topography">3D Topography</a>
-              <a href="/get-started">Get Started</a>
+              <a href="/auth">Get Started</a>
             </div>
             <div>
               <span>PLATFORM</span>
@@ -720,7 +787,6 @@ function APILOCKPage() {
             </div>
             <div>
               <span>RESOURCES</span>
-              <a href="/get-started">Live Scanner</a>
               <a href="#dashboard">Product preview</a>
               <a href="mailto:hello@apilock.dev">
                 Contact <ArrowUpRight />

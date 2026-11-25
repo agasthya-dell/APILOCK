@@ -1,8 +1,7 @@
 /**
- * APILOCK — GitHub API Client for Global Repository Discovery & File Inspection
+ * APILOCK — GitHub API Client for Authorized Repository Inspection
  *
  * Capabilities:
- * - Discover public repositories worldwide across multiple sectors, languages, and organizations
  * - Ingest and parse arbitrary public GitHub repository URLs (e.g., https://github.com/tempoxyz/tempo)
  * - Fetch full repository metadata, default branch, and recursive file trees
  * - Enumerate eligible source code and configuration files (.py, .js, .ts, .go, .java, .env, .yaml, etc.)
@@ -27,11 +26,6 @@ export interface GitHubRepo {
   size: number;
   topics: string[];
   visibility: "public" | "private";
-}
-
-export interface GitHubSearchResult {
-  total_count: number;
-  items: GitHubRepo[];
 }
 
 export interface GitHubContent {
@@ -70,52 +64,9 @@ export interface RepoTreeResult {
   truncated: boolean;
 }
 
-export interface RateLimitStatus {
-  limit: number;
-  remaining: number;
-  resetTime: number;
-}
-
 const GITHUB_API = "https://api.github.com";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/** Global multi-domain discovery queries for worldwide coverage */
-export const GLOBAL_DISCOVERY_QUERIES = [
-  // AI & Large Language Models
-  "topic:llm language:python stars:>10",
-  "topic:openai language:typescript stars:>5",
-  "topic:langchain language:python stars:>15",
-  "topic:machine-learning language:python stars:>20",
-  // Cloud Infrastructure & DevOps
-  "topic:terraform language:hcl stars:>5",
-  "topic:kubernetes language:yaml stars:>15",
-  "topic:aws language:python stars:>15",
-  "topic:cloud language:go stars:>15",
-  // Payment, Billing & FinTech
-  "topic:fintech language:typescript stars:>5",
-  "topic:stripe language:python stars:>5",
-  "topic:ecommerce language:javascript stars:>15",
-  // Backend Services & Microservices
-  "topic:backend language:go stars:>20",
-  "topic:microservices language:java stars:>15",
-  "topic:api-gateway language:typescript stars:>10",
-  "topic:database language:rust stars:>15",
-  // Cross-Language Open Source Projects
-  "language:python stars:>50",
-  "language:typescript stars:>50",
-  "language:go stars:>50",
-];
-
-let lastRateLimitStatus: RateLimitStatus = {
-  limit: 60,
-  remaining: 60,
-  resetTime: Date.now() + 3600000,
-};
-
-export function getRateLimitStatus(): RateLimitStatus {
-  return lastRateLimitStatus;
-}
 
 /** Fetch with exponential backoff and rate-limit detection */
 async function ghFetch(url: string, attempt = 0): Promise<Response> {
@@ -126,18 +77,8 @@ async function ghFetch(url: string, attempt = 0): Promise<Response> {
     },
   });
 
-  // Track rate limit headers
-  const limitHeader = res.headers.get("x-ratelimit-limit");
-  const remainingHeader = res.headers.get("x-ratelimit-remaining");
+  // Honor GitHub's rate-limit reset time when retrying.
   const resetHeader = res.headers.get("x-ratelimit-reset");
-
-  if (limitHeader && remainingHeader && resetHeader) {
-    lastRateLimitStatus = {
-      limit: parseInt(limitHeader, 10),
-      remaining: parseInt(remainingHeader, 10),
-      resetTime: parseInt(resetHeader, 10) * 1000,
-    };
-  }
 
   if (res.status === 403 || res.status === 429) {
     const retryAfter = res.headers.get("Retry-After");
@@ -172,10 +113,15 @@ async function ghFetch(url: string, attempt = 0): Promise<Response> {
  */
 export function parseGitHubRepoInput(input: string): { owner: string; repo: string } | null {
   if (!input || typeof input !== "string") return null;
-  const clean = input.trim().replace(/\.git$/i, "").replace(/\/$/, "");
+  const clean = input
+    .trim()
+    .replace(/\.git$/i, "")
+    .replace(/\/$/, "");
 
   // Match URL format
-  const urlMatch = clean.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)/i);
+  const urlMatch = clean.match(
+    /(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)/i,
+  );
   if (urlMatch && urlMatch[1] && urlMatch[2]) {
     return { owner: urlMatch[1], repo: urlMatch[2] };
   }
@@ -192,7 +138,10 @@ export function parseGitHubRepoInput(input: string): { owner: string; repo: stri
 /**
  * Fetch a single public repository by owner and name.
  */
-export async function fetchRepositoryMetadata(owner: string, repo: string): Promise<GitHubRepo | null> {
+export async function fetchRepositoryMetadata(
+  owner: string,
+  repo: string,
+): Promise<GitHubRepo | null> {
   const url = `${GITHUB_API}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
   try {
     const res = await ghFetch(url);
@@ -234,63 +183,6 @@ export async function fetchUserRepositories(accessToken: string): Promise<GitHub
   }
 
   return allRepos;
-}
-
-/**
- * Uses pagination and persists discovery checkpoints to resume seamlessly.
- */
-export async function discoverNextBatch(
-  checkpoint: { queryIndex: number; page: number },
-  maxResults = 25,
-  onProgress?: (msg: string) => void,
-): Promise<{
-  repos: GitHubRepo[];
-  nextCheckpoint: { queryIndex: number; page: number };
-}> {
-  let { queryIndex, page } = checkpoint;
-  if (queryIndex >= GLOBAL_DISCOVERY_QUERIES.length) {
-    queryIndex = 0;
-    page = 1;
-  }
-
-  const query = GLOBAL_DISCOVERY_QUERIES[queryIndex]!;
-  onProgress?.(`Global discovery: query [${queryIndex + 1}/${GLOBAL_DISCOVERY_QUERIES.length}] page ${page}...`);
-
-  // Global search for existing established public repositories worldwide
-  const url = `${GITHUB_API}/search/repositories?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=${maxResults}&page=${page}`;
-
-  try {
-    const res = await ghFetch(url);
-    if (!res.ok) {
-      onProgress?.(`GitHub API returned status ${res.status}. Advancing query checkpoint.`);
-      return {
-        repos: [],
-        nextCheckpoint: { queryIndex: (queryIndex + 1) % GLOBAL_DISCOVERY_QUERIES.length, page: 1 },
-      };
-    }
-
-    const data: GitHubSearchResult = await res.json();
-    const items = data.items || [];
-
-    let nextQueryIndex = queryIndex;
-    let nextPage = page + 1;
-    if (items.length < maxResults || nextPage > 5) {
-      nextQueryIndex = (queryIndex + 1) % GLOBAL_DISCOVERY_QUERIES.length;
-      nextPage = 1;
-    }
-
-    onProgress?.(`Discovered ${items.length} repositories from global search query.`);
-    return {
-      repos: items,
-      nextCheckpoint: { queryIndex: nextQueryIndex, page: nextPage },
-    };
-  } catch (err) {
-    onProgress?.(`Discovery connection timeout or error. Retrying later.`);
-    return {
-      repos: [],
-      nextCheckpoint: { queryIndex, page },
-    };
-  }
 }
 
 /**
@@ -449,11 +341,35 @@ export function isEligibleFile(path: string): boolean {
   if (excludedDirs.some((dir) => lower.includes(dir))) return false;
 
   const binaryOrBundleExts = [
-    ".png", ".jpg", ".jpeg", ".gif", ".ico", ".svg", ".webp",
-    ".woff", ".woff2", ".ttf", ".eot",
-    ".mp4", ".mp3", ".webm", ".zip", ".tar", ".gz", ".7z",
-    ".pdf", ".lock", ".min.js", ".min.css", ".bundle.js", ".map",
-    ".jar", ".war", ".class", ".exe", ".bin",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".ico",
+    ".svg",
+    ".webp",
+    ".woff",
+    ".woff2",
+    ".ttf",
+    ".eot",
+    ".mp4",
+    ".mp3",
+    ".webm",
+    ".zip",
+    ".tar",
+    ".gz",
+    ".7z",
+    ".pdf",
+    ".lock",
+    ".min.js",
+    ".min.css",
+    ".bundle.js",
+    ".map",
+    ".jar",
+    ".war",
+    ".class",
+    ".exe",
+    ".bin",
   ];
   if (binaryOrBundleExts.some((ext) => lower.endsWith(ext))) return false;
 

@@ -47,16 +47,6 @@ export function AskPhillNavbar() {
             }`}
             style={{ color: "#ffffff" }}
           >
-            {/* Global Scanner Link */}
-            <Link
-              to="/get-started"
-              onClick={() => setIsOpen(false)}
-              className="!text-white hover:!text-white hover:bg-white/20 text-xs sm:text-[13px] font-sans font-bold py-1.5 px-3 rounded-full text-center transition-all cursor-pointer block select-none !opacity-100"
-              style={{ color: "#ffffff", opacity: 1 }}
-            >
-              Scanner
-            </Link>
-
             {/* Dashboard Link */}
             <Link
               to="/dashboard"

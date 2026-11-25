@@ -5,16 +5,7 @@ import {
   isPublicFrontendConfig,
   scanContent,
 } from "../lib/secret-patterns";
-import {
-  isEligibleFile,
-  parseGitHubRepoInput,
-} from "../lib/github-api";
-import {
-  defaultMetrics,
-  recomputeMetrics,
-  toTrackedRepo,
-  type AgentState,
-} from "../lib/agent-store";
+import { isEligibleFile, parseGitHubRepoInput } from "../lib/github-api";
 
 describe("APILOCK High-Value Secret Detection Engine", () => {
   const dummyRepo = {
@@ -165,7 +156,9 @@ describe("APILOCK High-Value Secret Detection Engine", () => {
       const mixpanelToken = mixpanel.init("abc123456789");
     `;
 
-    expect(isPublicFrontendConfig('const stripePublishable = "pk_live_51Msz82KlmA9f83Kls";')).toBe(true);
+    expect(isPublicFrontendConfig('const stripePublishable = "pk_live_51Msz82KlmA9f83Kls";')).toBe(
+      true,
+    );
     expect(isPublicFrontendConfig('const supabaseAnon = "anon_key_12345";')).toBe(true);
     expect(isPublicFrontendConfig('apiKey: "AIzaSy", authDomain: "firebase"')).toBe(true);
     expect(isPublicFrontendConfig('client_id: "xyz.apps.googleusercontent.com"')).toBe(true);
@@ -288,7 +281,9 @@ describe("APILOCK High-Value Secret Detection Engine", () => {
     );
 
     expect(findings[0]?.line).toBe(4);
-    expect(findings[0]?.fileUrl).toBe("https://github.com/example-org/ai-backend/blob/main/src/service/api.py#L4");
+    expect(findings[0]?.fileUrl).toBe(
+      "https://github.com/example-org/ai-backend/blob/main/src/service/api.py#L4",
+    );
   });
 
   // 11. Parse Arbitrary Public GitHub Repository Input (Section 1 Example)
@@ -329,52 +324,7 @@ describe("APILOCK High-Value Secret Detection Engine", () => {
     expect(isEligibleFile("build/output.map")).toBe(false);
   });
 
-  // 13. Telemetry & Metrics Isolation (Section 11)
-  it("keeps discovered, fully scanned, and partially scanned repository counts strictly separated", () => {
-    const rawRepo1 = {
-      id: 1,
-      name: "repo-1",
-      full_name: "org/repo-1",
-      owner: { login: "org", avatar_url: "" },
-      html_url: "https://github.com/org/repo-1",
-      description: null,
-      language: "Python",
-      stargazers_count: 50,
-      default_branch: "main",
-      created_at: "",
-      updated_at: "",
-      pushed_at: "",
-      size: 100,
-      topics: [],
-      visibility: "public" as const,
-    };
-
-    const tracked1 = toTrackedRepo(rawRepo1, true);
-    tracked1.status = "Completed"; // Fully scanned
-
-    const tracked2 = toTrackedRepo({ ...rawRepo1, id: 2, name: "repo-2" }, true);
-    tracked2.status = "Partially Scanned"; // Partial scan
-
-    const tracked3 = toTrackedRepo({ ...rawRepo1, id: 3, name: "repo-3" }, false);
-    tracked3.status = "Discovered"; // Discovered only
-
-    const testState: AgentState = {
-      repos: [tracked1, tracked2, tracked3],
-      findings: [],
-      metrics: defaultMetrics(),
-      checkpoint: { queryIndex: 0, page: 1, cycleCount: 1, lastDiscoveredAt: null },
-    };
-
-    const metrics = recomputeMetrics(testState);
-    expect(metrics.totalDiscovered).toBe(3);
-    expect(metrics.totalFullyScanned).toBe(1);
-    expect(metrics.totalPartiallyScanned).toBe(1);
-    expect(metrics.totalInspected).toBe(2);
-    // Never mix discovered with fully scanned
-    expect(metrics.totalFullyScanned).not.toBe(metrics.totalDiscovered);
-  });
-
-  // 14. Shannon Entropy
+  // 13. Shannon Entropy
   it("calculates Shannon entropy accurately to distinguish high-entropy secrets from low-entropy strings", () => {
     const lowEntropy = "aaaaaaaaaaaaaaaaaaaa";
     const mediumEntropy = "hello_world_variable_name";

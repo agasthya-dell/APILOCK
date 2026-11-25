@@ -15,11 +15,11 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
 
-  it("matches a page for /get-started instead of falling back to not found", () => {
+  it("does not expose the retired worldwide scanner route", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
     const matches = router.matchRoutes("/get-started");
 
-    expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+    expect(matches.some((match) => match.routeId === "/get-started")).toBe(false);
   });
 });

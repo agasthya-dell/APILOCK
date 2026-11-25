@@ -110,7 +110,7 @@ export function OrganicNavbar() {
             {/* 3. Right Capsule: Inset Pill with My Account in Pure Black & Pure White */}
             <div className="h-[42px] flex items-center justify-center px-4 sm:px-5 rounded-full bg-black border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-[13px] sm:text-[13.5px] font-sans font-medium text-white">
               <Link
-                to="/get-started"
+                to="/auth"
                 className="text-white hover:opacity-80 transition-opacity py-1 whitespace-nowrap cursor-pointer flex items-center gap-1.5"
               >
                 <span>My Account</span>

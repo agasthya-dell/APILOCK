@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ReportIdRouteImport } from './routes/report.$id'
 import { Route as ScanIdRouteImport } from './routes/scan.$id'
@@ -38,11 +37,6 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GetStartedRoute = GetStartedRouteImport.update({
-  id: '/get-started',
-  path: '/get-started',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -64,7 +58,6 @@ export interface FileRoutesByFullPath {
   '/analyze': typeof AnalyzeRoute
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/get-started': typeof GetStartedRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/report/$id': typeof ReportIdRoute
   '/scan/$id': typeof ScanIdRoute
@@ -74,7 +67,6 @@ export interface FileRoutesByTo {
   '/analyze': typeof AnalyzeRoute
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/get-started': typeof GetStartedRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/report/$id': typeof ReportIdRoute
   '/scan/$id': typeof ScanIdRoute
@@ -85,7 +77,6 @@ export interface FileRoutesById {
   '/analyze': typeof AnalyzeRoute
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/get-started': typeof GetStartedRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/report/$id': typeof ReportIdRoute
   '/scan/$id': typeof ScanIdRoute
@@ -97,7 +88,6 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/auth'
     | '/dashboard'
-    | '/get-started'
     | '/auth/callback'
     | '/report/$id'
     | '/scan/$id'
@@ -107,7 +97,6 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/auth'
     | '/dashboard'
-    | '/get-started'
     | '/auth/callback'
     | '/report/$id'
     | '/scan/$id'
@@ -117,7 +106,6 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/auth'
     | '/dashboard'
-    | '/get-started'
     | '/auth/callback'
     | '/report/$id'
     | '/scan/$id'
@@ -128,7 +116,6 @@ export interface RootRouteChildren {
   AnalyzeRoute: typeof AnalyzeRoute
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRoute
-  GetStartedRoute: typeof GetStartedRoute
   ReportIdRoute: typeof ReportIdRoute
   ScanIdRoute: typeof ScanIdRoute
 }
@@ -161,13 +148,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/get-started': {
-      id: '/get-started'
-      path: '/get-started'
-      fullPath: '/get-started'
-      preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
@@ -209,7 +189,6 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzeRoute: AnalyzeRoute,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRoute,
-  GetStartedRoute: GetStartedRoute,
   ReportIdRoute: ReportIdRoute,
   ScanIdRoute: ScanIdRoute,
 }
